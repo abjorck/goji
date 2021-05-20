@@ -33,6 +33,8 @@ pub mod boards;
 pub mod resolution;
 pub use crate::boards::*;
 pub mod sprints;
+pub mod project;
+
 pub use crate::sprints::*;
 
 #[derive(Deserialize, Debug)]
@@ -92,6 +94,11 @@ impl Jira {
     /// return search interface
     pub fn search(&self) -> Search {
         Search::new(self)
+    }
+
+    /// return project interface
+    pub fn project(&self) -> project::Project {
+        project::Project::new(self)
     }
 
     // return issues interface

@@ -17,7 +17,7 @@ pub struct Errors {
 }
 
 /// represents a single jira issue
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Issue {
     #[serde(rename = "self")]
     pub self_link: String,
@@ -105,6 +105,11 @@ impl Issue {
             .unwrap_or_default()
     }
 
+    pub fn components(&self) -> Vec<Component> {
+        self.field::<Vec<Component>>("components")
+            .and_then(|value| value.ok())
+            .unwrap_or_default()
+    }
     /// list of versions associated with the issue
     pub fn fix_versions(&self) -> Vec<Version> {
         self.field::<Vec<Version>>("fixVersions")
@@ -192,19 +197,19 @@ pub struct Visibility {
     pub value: String,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Changelog {
     pub histories: Vec<History>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct History {
     pub author: User,
     pub created: String,
     pub items: Vec<HistoryItem>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HistoryItem {
     pub field: String,
     pub from: Option<String>,
@@ -257,7 +262,7 @@ pub struct Version {
     pub self_link: String,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
     pub active: bool,
     #[serde(rename = "avatarUrls")]
@@ -281,6 +286,15 @@ pub struct Status {
     pub icon_url: String,
     pub id: String,
     pub name: String,
+    #[serde(rename = "self")]
+    pub self_link: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Component {
+    pub description: Option<String>,
+    pub name: String,
+    pub id: String,
     #[serde(rename = "self")]
     pub self_link: String,
 }
